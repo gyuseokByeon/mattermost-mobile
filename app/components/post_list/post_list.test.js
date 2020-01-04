@@ -10,9 +10,13 @@ import * as NavigationActions from 'app/actions/navigation';
 import PostList from './post_list';
 
 jest.useFakeTimers();
+jest.mock('react-intl');
 
 describe('PostList', () => {
+    const formatMessage = jest.fn();
     const serverURL = 'https://server-url.fake';
+    const deeplinkRoot = 'mattermost-beta://server-url.fake';
+
     const baseProps = {
         actions: {
             handleSelectChannelByName: jest.fn(),
@@ -30,12 +34,13 @@ describe('PostList', () => {
     };
 
     const deepLinks = {
-        permalink: serverURL + '/team-name/pl/pl-id',
-        channel: serverURL + '/team-name/channels/channel-name',
+        permalink: deeplinkRoot + '/team-name/pl/pl-id',
+        channel: deeplinkRoot + '/team-name/channels/channel-name',
     };
 
     const wrapper = shallow(
-        <PostList {...baseProps}/>
+        <PostList {...baseProps}/>,
+        {context: {intl: {formatMessage}}},
     );
 
     test('should match snapshot', () => {
